@@ -1,0 +1,4 @@
+require "cc_portal_wordpress_integration/engine"
+
+module CcPortalWordpressIntegration
+end
