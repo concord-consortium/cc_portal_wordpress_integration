@@ -6,8 +6,9 @@ module CcPortalWordpressIntegration
   Warden::Manager.after_authentication do |user, warden, options|
     cookies = warden.cookies
     params = warden.params
+    request = warden.request
 
-    delete_wordpress_cookies cookies
+    delete_wordpress_cookies cookies, request
     begin
       # log in to the blog
       resp = Wordpress.new.log_in_user(user.login, params[:user][:password])
@@ -18,7 +19,7 @@ module CcPortalWordpressIntegration
       resp['Set-Cookie'].split(/[,\;] |\n/).each do |token|
         k,v = token.split("=")
         if k.to_s =~ /^wordpress_/
-          cookies[k.to_sym] = {:value => CGI::unescape(v), :domain => cookie_domain }
+          cookies[k.to_sym] = {:value => CGI::unescape(v), :domain => cookie_domain(request) }
         end
       end
     rescue
@@ -27,15 +28,15 @@ module CcPortalWordpressIntegration
   end
 
   Warden::Manager.before_logout do |user, warden, options|
-    delete_wordpress_cookies warden.cookies
+    delete_wordpress_cookies warden.cookies, warden.request
   end
 
-  def delete_wordpress_cookies(cookies)
+  def delete_wordpress_cookies(cookies, request)
     # cookies match: wordpress_* and wordpress_logged_in_*
     cookies.each do |key, val|
       if key.to_s =~ /^wordpress_/
         if cookies.kind_of? ActionDispatch::Cookies::CookieJar
-          cookies.delete(key, {:domain => cookie_domain})
+          cookies.delete(key, {:domain => cookie_domain(request)})
         else
           cookies.delete key
         end
