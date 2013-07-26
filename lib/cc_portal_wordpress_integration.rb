@@ -9,7 +9,7 @@ module CcPortalWordpressIntegration
     params = warden.params
     request = warden.request
 
-    delete_wordpress_cookies cookies, request
+    delete_wordpress_cookies(cookies, request)
     begin
       # log in to the blog
       resp = Wordpress.new.log_in_user(user.login, params[:user][:password])
@@ -29,10 +29,10 @@ module CcPortalWordpressIntegration
   end
 
   Warden::Manager.before_logout do |user, warden, options|
-    delete_wordpress_cookies warden.cookies, warden.request
+    delete_wordpress_cookies(warden.cookies, warden.request)
   end
 
-  def delete_wordpress_cookies(cookies, request)
+  def self.delete_wordpress_cookies(cookies, request)
     # cookies match: wordpress_* and wordpress_logged_in_*
     cookies.each do |key, val|
       if key.to_s =~ /^wordpress_/
@@ -47,10 +47,10 @@ module CcPortalWordpressIntegration
 
   def self.cookie_domain(request)
     # use wildcard domain (last two parts ".concord.org") for this cookie
-    cookie_domain = request.host
-    cookie_domain = '.concord.org' if cookie_domain =~ /\.concord\.org$/
+    domain = request.host
+    domain = '.concord.org' if domain =~ /\.concord\.org$/
 
-    return cookie_domain
+    return domain
   end
 
 end
