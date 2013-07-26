@@ -43,4 +43,12 @@ module CcPortalWordpressIntegration
     end
   end
 
+  def cookie_domain(request)
+    # use wildcard domain (last two parts ".concord.org") for this cookie
+    cookie_domain = request.host
+    cookie_domain = '.concord.org' if @cookie_domain =~ /\.concord\.org$/
+
+    return cookie_domain
+  end
+
 end
