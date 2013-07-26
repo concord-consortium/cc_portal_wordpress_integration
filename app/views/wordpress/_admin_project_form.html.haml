@@ -1,0 +1,26 @@
+- content_for "admin_project_form_#{admin_project.id || 'new'}" do
+  %p
+    = field_set_tag '<b>Geniverse blog integration</b>'.html_safe do
+      %ul.menu_v
+        %li
+          %b
+            Wordpress blog site URL:
+          = f.text_field :word_press_url, :size => 60
+        %li
+          %b
+            RPC Admin login:
+          = f.text_field :rpc_admin_login,  :size => 60
+        %li
+          %b
+            RPC Admin email:
+          = f.text_field :rpc_admin_email, :size => 60
+        %li
+          %b
+            RPC Admin password:
+          = f.text_field :rpc_admin_password,  :size => 60
+        %li
+          %b
+            Additional admin users:
+          = f.text_field :admin_accounts, :size => 60
+          %br
+          (This will automatically set these users to be admin on newly created class blogs. Specify wordpress usernames in a comma separated list.)

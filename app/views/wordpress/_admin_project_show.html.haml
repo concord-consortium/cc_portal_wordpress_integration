@@ -1,0 +1,24 @@
+- content_for "admin_project_show_#{admin_project.id || 'new'}" do
+  %li
+    = field_set_tag 'Geniverse Blog Integration' do
+      %ul.menu_v
+        %li
+          Wordpress blog site URL:
+          = admin_project.word_press_url
+        %li
+          RPC Admin login:
+          = admin_project.rpc_admin_login
+        %li
+          RPC Admin email:
+          = admin_project.rpc_admin_email
+        %li
+          RPC Admin password:
+          %i
+            hidden
+        %li
+          Additional admin users:
+          - if admin_project.admin_accounts && !admin_project.admin_accounts.empty?
+            = admin_project.admin_accounts
+          - else
+            %i
+              none
