@@ -6,6 +6,8 @@ module CcPortalWordpressIntegration
   Warden::Manager.after_authentication do |user, warden, options|
     cookies = warden.cookies
     params = warden.params
+
+    delete_wordpress_cookies cookies
     begin
       # log in to the blog
       resp = Wordpress.new.log_in_user(user.login, params[:user][:password])
@@ -25,7 +27,10 @@ module CcPortalWordpressIntegration
   end
 
   Warden::Manager.before_logout do |user, warden, options|
-    cookies = warden.cookies
+    delete_wordpress_cookies warden.cookies
+  end
+
+  def delete_wordpress_cookies(cookies)
     # cookies match: wordpress_* and wordpress_logged_in_*
     cookies.each do |key, val|
       if key.to_s =~ /^wordpress_/
