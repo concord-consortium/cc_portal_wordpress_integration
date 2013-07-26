@@ -1,5 +1,6 @@
 require "cc_portal_wordpress_integration/engine"
 require "wordpress"
+require "cgi"
 
 module CcPortalWordpressIntegration
 
