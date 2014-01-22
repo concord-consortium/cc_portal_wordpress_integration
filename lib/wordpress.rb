@@ -187,10 +187,14 @@ SAMPLE
     return URI.escape(str, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
   end
 
+  def _clean_blog_name(name)
+    return name.gsub(/[^[:alnum:]_-]+/, '')
+  end
+
   def _post(content, blog = "", action = "/xmlrpc.php")
     url = @url
     url += '/' unless url.end_with? '/'
-    url += blog
+    url += _clean_blog_name(blog)
     url = url.chop if url.end_with? '/'
     url += action
     uri = URI.parse(url)
