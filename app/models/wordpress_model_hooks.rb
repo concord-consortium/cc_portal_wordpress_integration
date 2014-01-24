@@ -2,7 +2,7 @@ module WordpressModelHooks
   Portal::Clazz.class_eval do
     validates_format_of :class_word, :with => /^[[:alnum:]_-]+$/,  # only alphanumerics, dashes and underscores
       :message => "must only have letters, numbers, dashes and underscores ( - _ )",
-      :unless => Proc.new { |clazz| clazz.created_at < Time.new(2014,1,23) }
+      :unless => Proc.new { |clazz| clazz.created_at && clazz.created_at < Time.new(2014,1,23) }
 
     before_create :create_class_blog
 
