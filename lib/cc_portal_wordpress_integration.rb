@@ -10,22 +10,26 @@ module CcPortalWordpressIntegration
     request = warden.request
 
     delete_wordpress_cookies(cookies, request)
-    begin
-      # log in to the blog
-      resp = Wordpress.new.log_in_user(user.login, (params[:user][:password] rescue nil) || params[:password])
 
-      # capture the cookies set by the blog
-      # and set those cookies in our current domain
-      #   cookies match: wordpress_* and wordpress_logged_in_*
-      resp['Set-Cookie'].split(/[,\;] |\n/).each do |token|
-        k,v = token.split("=")
-        if k.to_s =~ /^wordpress_/
-          cookies[k.to_sym] = {:value => CGI::unescape(v), :domain => cookie_domain(request) }
+    project = Admin::Project.default_project
+    if project.auto_login_wp
+      begin
+        # log in to the blog
+        resp = Wordpress.new.log_in_user(user.login, (params[:user][:password] rescue nil) || params[:password])
+
+        # capture the cookies set by the blog
+        # and set those cookies in our current domain
+        #   cookies match: wordpress_* and wordpress_logged_in_*
+        resp['Set-Cookie'].split(/[,\;] |\n/).each do |token|
+          k,v = token.split("=")
+          if k.to_s =~ /^wordpress_/
+            cookies[k.to_sym] = {:value => CGI::unescape(v), :domain => cookie_domain(request) }
+          end
         end
+      rescue => e
+        # FIXME How do we handle a login failure?
+        Rails.logger.warn "Failed to set wordpress cookies: #{e}"
       end
-    rescue => e
-      # FIXME How do we handle a login failure?
-      Rails.logger.warn "Failed to set wordpress cookies: #{e}"
     end
   end
 
