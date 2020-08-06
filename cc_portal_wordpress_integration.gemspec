@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 
   # Make sure to match versions with the rails portal
   s.add_dependency "rails", "> 3.2.11"
-  s.add_dependency "devise", "~> 2.1.0"
+  s.add_dependency "devise", ">= 3.0.0"
   s.add_dependency "haml", "~> 4.0"
   # s.add_dependency "jquery-rails"
 
